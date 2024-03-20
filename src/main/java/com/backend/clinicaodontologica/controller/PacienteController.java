@@ -15,6 +15,7 @@ import javax.validation.Valid;
 
 import java.util.List;
 
+
 @RestController //@ResponseBody + @Controller
 @RequestMapping("/pacientes")
 public class PacienteController {
@@ -34,7 +35,7 @@ public class PacienteController {
 
     @GetMapping("/{id}") //localhost:8080/pacientes/x
     public ResponseEntity<PacienteSalidaDto> buscarPacientePorId(@PathVariable int id){
-        return new ResponseEntity<>(pacienteService.buscarPacientePorId(id), HttpStatus.OK);
+        return new ResponseEntity<>(pacienteService.buscarPacientePorId((long) id), HttpStatus.OK);
     }
 
 
