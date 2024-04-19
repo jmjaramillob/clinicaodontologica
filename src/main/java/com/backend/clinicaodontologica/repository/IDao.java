@@ -5,7 +5,7 @@ import java.util.List;
 public interface IDao<T> {
     T registrar(T t);
     T buscarPorId(long id);
-    T eliminarPorId(long id);
+    void eliminarPorId(long id);
     List<T> listarTodos();
 
 }
