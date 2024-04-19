@@ -121,8 +121,36 @@ public class PacienteRepository implements IDao<Paciente> {
     }
 
     @Override
-    public Paciente eliminarPorId(long id){
-        return null;
+    public void eliminarPorId(long id){
+        Connection connection = null;
+        try{
+            connection = H2Connection.getConnection();
+            connection.setAutoCommit(false);
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM PACIENTES WHERE ID = ?", (int) id);
+            ps.execute();
+            connection.commit();
+            LOGGER.warn("Se ha eliminado un paciente.");
+        }catch (Exception e){
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                    LOGGER.info("Tuvimos un problema");
+                    LOGGER.error(e.getMessage());
+                    e.printStackTrace();
+                } catch (SQLException exception) {
+                    LOGGER.error(exception.getMessage());
+                    exception.printStackTrace();
+                }
+            }
+        } finally {
+            try {
+                connection.close();
+            } catch (Exception ex) {
+                LOGGER.error("No se pudo cerrar la conexion: " + ex.getMessage());
+            }
+        }
     }
 
     private Paciente crearObjetoPaciente(ResultSet resultSet) throws SQLException {
