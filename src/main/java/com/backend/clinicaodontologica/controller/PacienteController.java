@@ -6,12 +6,13 @@ import com.backend.clinicaodontologica.exceptions.ResourceNotFoundException;
 import com.backend.clinicaodontologica.service.IPacienteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/pacientes")
 public class PacienteController {
     //cliente -> json -> dto -> controlador -> dto -> servicio : dto -> entity -> persistencia -> entity -> servicio : entity -> dto -> controlador -> dto : json_

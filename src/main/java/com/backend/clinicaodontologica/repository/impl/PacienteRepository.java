@@ -7,17 +7,23 @@ import com.backend.clinicaodontologica.entity.Paciente;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class PacienteRepository implements IDao<Paciente> {
     private Logger LOGGER = LoggerFactory.getLogger(PacienteRepository.class);
-    private DomicilioRepository domicilioRepository;
+    private final DomicilioRepository domicilioRepository;
 
-
+    @Autowired
+    public PacienteRepository(DomicilioRepository domicilioRepository){
+        this.domicilioRepository = domicilioRepository;
+    }
     @Override
     public Paciente registrar(Paciente paciente) {
         Connection connection = null;
@@ -27,7 +33,6 @@ public class PacienteRepository implements IDao<Paciente> {
             connection = H2Connection.getConnection();
             connection.setAutoCommit(false);
 
-            domicilioRepository = new DomicilioRepository();
             Domicilio domicilioRegistrado = domicilioRepository.registrar(paciente.getDomicilio());
 
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO PACIENTES (NOMBRE, APELLIDO, DNI, FECHA, DOMICILIO_ID) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
@@ -84,7 +89,57 @@ public class PacienteRepository implements IDao<Paciente> {
 
     @Override
     public Paciente buscarPorId(long id) {
-        return null;
+        Connection connection = null;
+        PacienteRepository pacienteRepository = null;
+        Paciente paciente = null;
+
+        try {
+            connection = H2Connection.getConnection();
+
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT FROM PACIENTES WHERE ID = ?");
+            preparedStatement.setInt(1, (int) id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()) {
+                paciente = pacienteRepository.crearObjetoPaciente(resultSet);
+            }
+
+            connection.commit();
+            LOGGER.info("Se ha encontrado el paciente con id {}: ", (int) id );
+
+
+
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                    LOGGER.info("Tuvimos un problema");
+                    LOGGER.error(e.getMessage());
+                    e.printStackTrace();
+                } catch (SQLException exception) {
+                    LOGGER.error(exception.getMessage());
+                    exception.printStackTrace();
+                }
+            }
+
+
+        } finally {
+            {
+                try {
+                    connection.close();
+                } catch (Exception ex) {
+                    LOGGER.error("No se pudo cerrar la conexion: " + ex.getMessage());
+                }
+            }
+
+
+        }
+
+
+        return paciente;
+
     }
 
     @Override

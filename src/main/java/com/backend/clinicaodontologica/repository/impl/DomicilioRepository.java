@@ -6,15 +6,17 @@ import com.backend.clinicaodontologica.dbconnection.H2Connection;
 import com.backend.clinicaodontologica.entity.Domicilio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class DomicilioRepository implements IDao<Domicilio> {
     private final Logger LOGGER = LoggerFactory.getLogger(DomicilioRepository.class);
-
 
     @Override
     public Domicilio registrar(Domicilio domicilio) {

@@ -30,6 +30,7 @@ public class PacienteService implements IPacienteService {
 
     }
 
+
     public PacienteService(IDao<Paciente> pacienteRepository, ModelMapper modelMapper) {
         this.pacienteRepository = pacienteRepository;
         this.modelMapper = modelMapper;
