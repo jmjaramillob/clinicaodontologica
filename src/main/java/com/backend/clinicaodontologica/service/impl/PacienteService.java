@@ -22,7 +22,7 @@ public class PacienteService implements IPacienteService {
     private final Logger LOGGER = LoggerFactory.getLogger(PacienteService.class);
 
 
-    private IDao<Paciente> pacienteRepository;
+    private PacienteRepository pacienteRepository;
 
     private ModelMapper modelMapper;
 
@@ -30,11 +30,10 @@ public class PacienteService implements IPacienteService {
 
     }
 
-
-    public PacienteService(IDao<Paciente> pacienteRepository, ModelMapper modelMapper) {
+    public PacienteService(PacienteRepository pacienteRepository, ModelMapper modelMapper) {
         this.pacienteRepository = pacienteRepository;
         this.modelMapper = modelMapper;
-        //configureMapping();
+        configureMapping();
     }
 
     @Override
